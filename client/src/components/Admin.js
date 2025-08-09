@@ -19,7 +19,7 @@ const Admin = () => {
     const fetchUrls = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('/api/admin/urls');
+            const response = await axios.get('/api/admin');
             
             if (response.data.success) {
                 const urlData = response.data.data;
@@ -47,7 +47,7 @@ const Admin = () => {
         }
 
         try {
-            const response = await axios.delete(`/api/admin/urls/${id}`);
+            const response = await axios.delete(`/api/admin?id=${id}`);
             
             if (response.data.success) {
                 fetchUrls(); // Refresh the list

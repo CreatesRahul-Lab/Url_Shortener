@@ -48,6 +48,9 @@ client/node_modules/
 client/build/
 dist/
 
+# Vercel
+.vercel
+
 # Logs
 logs
 *.log

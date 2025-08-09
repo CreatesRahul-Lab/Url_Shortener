@@ -22,6 +22,58 @@ mongoose.connect(MONGODB_URI, {
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.log('MongoDB connection error:', err));
 
+// Add admin routes for local development compatibility (BEFORE url routes)
+app.get('/api/admin', async (req, res) => {
+    try {
+        const Url = require('./models/Url');
+        const urls = await Url.find().sort({ createdAt: -1 });
+        res.json({
+            success: true,
+            data: urls
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+app.delete('/api/admin', async (req, res) => {
+    try {
+        const Url = require('./models/Url');
+        const { id } = req.query;
+        
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID is required'
+            });
+        }
+
+        const url = await Url.findByIdAndDelete(id);
+        
+        if (!url) {
+            return res.status(404).json({
+                success: false,
+                message: 'URL not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'URL deleted successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
 // Routes
 app.use('/api', urlRoutes);
 app.use('/', urlRoutes); // For redirect routes
